@@ -1,8 +1,11 @@
 @echo off
 cd /d "%~dp0"
-echo === MODO DEMO: datos en memoria, no necesita Docker ===
-echo === Abre http://localhost:8000/docs  (Ctrl+C para detener) ===
 set STAGEPASS_MODO=demo
-start "" http://localhost:8000/docs
-.venv\Scripts\python -m uvicorn app.main:app --reload
+echo === MODO DEMO: datos en memoria, no necesita Docker ===
+echo === Abre http://localhost:8000/docs  -  NO cierres esta ventana ===
+start "" cmd /c "timeout /t 4 >NUL & start http://localhost:8000/docs"
+.venv\Scripts\python -m uvicorn app.main:app --port 8000 > demo_log.txt 2>&1
+type demo_log.txt
+echo.
+echo La API se detuvo. Si hubo un error aparece arriba.
 pause
