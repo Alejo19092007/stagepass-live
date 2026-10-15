@@ -6,6 +6,8 @@ Taller de Arquitectura de Software (UNAB). Plataforma de venta de boletería imp
 
 **Integrantes:**
 - Edwar Alejandro Jiménez Ríos
+- Carlos Saul Villabona Pinilla
+- Alejandro Moreno Suarez
 
 ## Diagrama de clases
 
