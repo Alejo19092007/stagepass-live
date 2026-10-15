@@ -41,6 +41,9 @@ def armar_contenedor(recintos: RecintoRepositoryPort, clientes: ClienteRepositor
 
 
 def contenedor_produccion() -> Contenedor:
+    if os.getenv("STAGEPASS_MODO", "").lower() == "demo":
+        return contenedor_demo()
+
     from pymongo import MongoClient
 
     from app.adapters.salida.credencial_adapter import Sha256CredencialAdapter
@@ -63,6 +66,27 @@ def contenedor_produccion() -> Contenedor:
         clientes=MySqlClienteAdapter(mysql),
         ordenes=MongoOrdenAdapter(mongo["ordenes"]),
         boletos=MongoBoletoAdapter(mongo["boletos"]),
+        pasarelas={MedioPago.PAYPAL: PayPalAdapter(), MedioPago.WOMPI: WompiAdapter(), MedioPago.PSE: PseAdapter()},
+        credenciales=Sha256CredencialAdapter(),
+        notificadores=[WhatsAppAdapter(), SendGridAdapter()],
+        facturacion=DianFacturacionAdapter(),
+    )
+
+
+def contenedor_demo() -> Contenedor:
+    """Misma app, pero con repositorios en memoria en vez de MySQL y MongoDB."""
+    from app.adapters.salida.credencial_adapter import Sha256CredencialAdapter
+    from app.adapters.salida.memoria_adapters import (
+        MemoriaBoletoAdapter, MemoriaClienteAdapter, MemoriaOrdenAdapter, MemoriaRecintoAdapter,
+    )
+    from app.adapters.salida.notificaciones import DianFacturacionAdapter, SendGridAdapter, WhatsAppAdapter
+    from app.adapters.salida.pasarelas_pago import PayPalAdapter, PseAdapter, WompiAdapter
+
+    return armar_contenedor(
+        recintos=MemoriaRecintoAdapter(),
+        clientes=MemoriaClienteAdapter(),
+        ordenes=MemoriaOrdenAdapter(),
+        boletos=MemoriaBoletoAdapter(),
         pasarelas={MedioPago.PAYPAL: PayPalAdapter(), MedioPago.WOMPI: WompiAdapter(), MedioPago.PSE: PseAdapter()},
         credenciales=Sha256CredencialAdapter(),
         notificadores=[WhatsAppAdapter(), SendGridAdapter()],

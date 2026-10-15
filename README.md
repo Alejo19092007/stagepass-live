@@ -50,6 +50,7 @@ En Windows basta con doble clic, en orden, sobre:
 1. `1_instalar.bat` – crea el entorno virtual e instala dependencias
 2. `2_pruebas.bat` – corre las pruebas
 3. `3_correr_api.bat` – levanta MySQL y MongoDB (Docker Desktop abierto) y la API
+4. `4_demo_sin_docker.bat` – la misma API con datos en memoria, sin Docker (solo para probar)
 
 O manualmente:
 
